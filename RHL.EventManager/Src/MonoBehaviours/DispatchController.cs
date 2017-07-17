@@ -16,7 +16,7 @@ namespace RHL.EventManager.MonoBehaviours {
 
         private uint serialId = 1;
 
-        internal void Dispatch<T>(object sender, T eventArgs) where T : EventArgs {
+        internal void Dispatch<T>(object sender, T eventArgs, float delay) where T : EventArgs {
             Type type = typeof(T);
             if (!this.listenersByType.ContainsKey(type)) {
                 return;
@@ -27,7 +27,7 @@ namespace RHL.EventManager.MonoBehaviours {
             }
             Action[] invocationList = eventList.GetInvocationList(sender, eventArgs);
             foreach (Action action in invocationList) {
-                this.StartCoroutine(this.ExecuteDispatch(action));
+                this.StartCoroutine(this.ExecuteDispatch(action, delay));
             }
         }
 
@@ -94,8 +94,8 @@ namespace RHL.EventManager.MonoBehaviours {
             return this.listenersById.ContainsKey(id);
         }
 
-        private IEnumerator ExecuteDispatch(Action action) {
-            yield return this.waitForEndOfFrame;
+        private IEnumerator ExecuteDispatch(Action action, float delay) {
+            yield return new WaitForSeconds(delay);
             action?.Invoke();
         }
 

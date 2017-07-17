@@ -56,11 +56,19 @@ namespace RHL.EventManager {
             Dispatch(null, eventArgs);
         }
 
+        public static void Dispatch<T>(T eventArgs, float delay) where T : EventArgs {
+            Dispatch(null, eventArgs, delay);
+        }
+
         public static void Dispatch<T>(object sender, T eventArgs) where T : EventArgs {
+            Dispatch(sender, eventArgs, 0);
+        }
+
+        public static void Dispatch<T>(object sender, T eventArgs, float delay) where T : EventArgs {
             if (eventArgs == null) {
                 throw new ArgumentNullException(nameof(eventArgs));
             }
-            DispatchController.Dispatch(sender, eventArgs);
+            DispatchController.Dispatch(sender, eventArgs, delay);
         }
 
         private static void AssertThatIdIsNotEqualsToZero(uint id) {
