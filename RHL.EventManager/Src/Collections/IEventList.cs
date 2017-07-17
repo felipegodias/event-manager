@@ -1,4 +1,7 @@
-﻿namespace RHL.EventManager.Collections {
+﻿using System;
+using JetBrains.Annotations;
+
+namespace RHL.EventManager.Collections {
 
     internal interface IEventList {
 
@@ -9,6 +12,9 @@
         bool Contains(uint id);
 
         void Clear();
+
+        [CanBeNull]
+        Action[] GetInvocationList(object sender, EventArgs eventArgs);
 
     }
 
