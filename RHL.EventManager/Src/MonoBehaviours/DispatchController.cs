@@ -8,8 +8,6 @@ namespace RHL.EventManager.MonoBehaviours {
 
     internal sealed class DispatchController : MonoBehaviour {
 
-        private readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
-
         private readonly IDictionary<Type, IEventList> listenersByType = new Dictionary<Type, IEventList>();
 
         private readonly IDictionary<uint, IEventList> listenersById = new Dictionary<uint, IEventList>();
