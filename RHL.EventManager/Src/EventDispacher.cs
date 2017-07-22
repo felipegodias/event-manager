@@ -5,6 +5,9 @@ using Object = UnityEngine.Object;
 
 namespace RHL.EventManager {
 
+    /// <summary>
+    ///     Provides event-related utility methods that register events.
+    /// </summary>
     public static class EventDispacher {
 
         private static DispatchController dispatchController;
