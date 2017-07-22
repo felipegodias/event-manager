@@ -83,6 +83,25 @@ namespace RHL.EventManager.MonoBehaviours {
             return true;
         }
 
+        internal void Clear() {
+            this.listenersById.Clear();
+            this.listenersByType.Clear();
+        }
+
+        internal void Clear<T>() where T : EventArgs {
+            Type type = typeof(T);
+            if (!this.listenersByType.ContainsKey(type)) {
+                return;
+            }
+
+            IEventList eventList = this.listenersByType[type];
+            uint[] ids = eventList.Ids;
+            foreach (uint id in ids) {
+                this.listenersById.Remove(id);
+            }
+            eventList.Clear();
+        }
+
         internal bool ContainsListener<T>(EventHandler<T> eventHandler) where T : EventArgs {
             Type type = typeof(T);
             if (!this.listenersByType.ContainsKey(type)) {

@@ -24,6 +24,18 @@ namespace RHL.EventManager.Collections {
             get { return this.count; }
         }
 
+        public uint[] Ids {
+            get {
+                uint[] ids = new uint[this.nodesList.Count];
+                int i = 0;
+                foreach (EventListNode<T> eventListNode in this.nodesList) {
+                    ids[i] = eventListNode.Id;
+                    i++;
+                }
+                return ids;
+            }
+        }
+
         public uint Remove(uint id) {
             if (!this.Contains(id)) {
                 return 0;

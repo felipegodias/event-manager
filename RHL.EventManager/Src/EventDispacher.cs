@@ -58,6 +58,21 @@ namespace RHL.EventManager {
         }
 
         /// <summary>
+        ///     Remove all event handlers.
+        /// </summary>
+        public static void Clear() {
+            DispatchController.Clear();
+        }
+
+        /// <summary>
+        ///     Remove all event handlers from the given event type.
+        /// </summary>
+        /// <typeparam name="T">The type of the event data.</typeparam>
+        public static void Clear<T>() where T : EventArgs {
+            DispatchController.Clear<T>();
+        }
+
+        /// <summary>
         ///     Determines whether an event handler method is in the listeners.
         /// </summary>
         /// <typeparam name="T">The type of the event data.</typeparam>

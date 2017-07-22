@@ -7,6 +7,8 @@ namespace RHL.EventManager.Collections {
 
         int Count { get; }
 
+        uint[] Ids { get; }
+
         uint Remove(uint id);
 
         bool Contains(uint id);
