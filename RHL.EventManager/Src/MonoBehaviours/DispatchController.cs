@@ -8,8 +8,6 @@ namespace RHL.EventManager.MonoBehaviours {
 
     internal sealed class DispatchController : MonoBehaviour {
 
-        private readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
-
         private readonly IDictionary<Type, IEventList> listenersByType = new Dictionary<Type, IEventList>();
 
         private readonly IDictionary<uint, IEventList> listenersById = new Dictionary<uint, IEventList>();
@@ -17,18 +15,23 @@ namespace RHL.EventManager.MonoBehaviours {
         private uint serialId = 1;
 
         internal void Dispatch<T>(object sender, T eventArgs, float delay) where T : EventArgs {
-            Type type = typeof(T);
-            if (!this.listenersByType.ContainsKey(type)) {
-                return;
-            }
-            EventList<T> eventList = this.listenersByType[type] as EventList<T>;
-            if (eventList == null) {
-                return;
-            }
-            Action[] invocationList = eventList.GetInvocationList(sender, eventArgs);
-            foreach (Action action in invocationList) {
-                this.StartCoroutine(this.ExecuteDispatch(action, delay));
-            }
+            Type objectType = typeof(object);
+            Type iterator = typeof(T);
+            do {
+                Type type = iterator;
+                iterator = iterator.BaseType;
+                if (!this.listenersByType.ContainsKey(type)) {
+                    continue;
+                }
+                IEventList eventList = this.listenersByType[type];
+                Action[] invocationList = eventList.GetInvocationList(sender, eventArgs);
+                if (invocationList == null) {
+                    continue;
+                }
+                foreach (Action action in invocationList) {
+                    this.StartCoroutine(this.ExecuteDispatch(action, delay));
+                }
+            } while (iterator != objectType && iterator != null);
         }
 
         internal uint AddListener<T>(EventHandler<T> eventHandler) where T : EventArgs {
@@ -78,6 +81,25 @@ namespace RHL.EventManager.MonoBehaviours {
             eventList.Remove(id);
             this.listenersById.Remove(id);
             return true;
+        }
+
+        internal void Clear() {
+            this.listenersById.Clear();
+            this.listenersByType.Clear();
+        }
+
+        internal void Clear<T>() where T : EventArgs {
+            Type type = typeof(T);
+            if (!this.listenersByType.ContainsKey(type)) {
+                return;
+            }
+
+            IEventList eventList = this.listenersByType[type];
+            uint[] ids = eventList.Ids;
+            foreach (uint id in ids) {
+                this.listenersById.Remove(id);
+            }
+            eventList.Clear();
         }
 
         internal bool ContainsListener<T>(EventHandler<T> eventHandler) where T : EventArgs {

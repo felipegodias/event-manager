@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace RHL.EventManager.Collections {
 
@@ -21,6 +22,18 @@ namespace RHL.EventManager.Collections {
 
         public int Count {
             get { return this.count; }
+        }
+
+        public uint[] Ids {
+            get {
+                uint[] ids = new uint[this.nodesList.Count];
+                int i = 0;
+                foreach (EventListNode<T> eventListNode in this.nodesList) {
+                    ids[i] = eventListNode.Id;
+                    i++;
+                }
+                return ids;
+            }
         }
 
         public uint Remove(uint id) {
@@ -71,7 +84,10 @@ namespace RHL.EventManager.Collections {
             return this.eventHandlersDic.ContainsKey(eventHandler);
         }
 
-        public Action[] GetInvocationList(object sender, T eventArgs) {
+        public Action[] GetInvocationList(object sender, EventArgs eventArgs) {
+            if (!(eventArgs is T)) {
+                return null;
+            }
             Action[] invocationList = new Action[this.count];
             int i = 0;
             LinkedListNode<EventListNode<T>> iterator = this.nodesList.First;
@@ -85,7 +101,7 @@ namespace RHL.EventManager.Collections {
                     iterator = next;
                     continue;
                 }
-                invocationList[i] = () => { node.Invoke(sender, eventArgs); };
+                invocationList[i] = () => { node.Invoke(sender, eventArgs as T); };
                 i++;
                 iterator = iterator.Next;
             }
