@@ -6,6 +6,18 @@
     /// </summary>
     public abstract class EventArgs {
 
+        /// <summary>
+        /// </summary>
+        public void Dispatch() {
+            this.Dispatch(null);
+        }
+
+        /// <summary>
+        /// </summary>
+        public void Dispatch(object sender) {
+            EventDispacher.Dispatch(sender, this);
+        }
+
     }
 
 }
