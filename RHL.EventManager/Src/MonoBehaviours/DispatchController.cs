@@ -16,7 +16,7 @@ namespace RHL.EventManager.MonoBehaviours {
 
         internal void Dispatch<T>(object sender, T eventArgs, float delay) where T : EventArgs {
             Type objectType = typeof(object);
-            Type iterator = typeof(T);
+            Type iterator = eventArgs.GetType();
             do {
                 Type type = iterator;
                 iterator = iterator.BaseType;
